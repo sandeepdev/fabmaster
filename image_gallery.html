@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertical Image Slider with Overlaid Inquiry Button</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Swiper.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+    <!-- FontAwesome for WhatsApp Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 2000;
+        }
+
+        .swiper-container {
+            width: 100%;
+            height: calc(100vh - 56px);
+            padding-top: 56px;
+        }
+
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            height: 100%; /* Full height for vertical scrolling */
+            margin-bottom: 20px;
+        }
+
+        .swiper-slide img {
+            width: auto; /* Adjust the width to auto to fit vertically */
+            max-width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .inquiry-button {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            background-color: #25d366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+        .inquiry-button i {
+            margin-right: 10px;
+        }
+
+        .inquiry-button:hover {
+            background-color: #20b259;
+            transform: scale(1.05);
+        }
+
+        /* Swiper Button Styles */
+        .swiper-button-next, .swiper-button-prev {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #007bff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            z-index: 10;
+        }
+
+        .swiper-button-next:after, .swiper-button-prev:after {
+            font-size: 24px;
+        }
+
+        .swiper-button-next:hover, .swiper-button-prev:hover {
+            background-color: rgba(0, 123, 255, 0.9);
+            transform: scale(1.1);
+        }
+
+        .swiper-button-next {
+            right: 20px;
+        }
+
+        .swiper-button-prev {
+            left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 px-lg-5 py-3 py-lg-0 fixed-top">
+        <a href="index.html" class="navbar-brand p-0">
+            <h1 class="text-primary m-0"><i class="fas fa-star-of-life me-3"></i>FABMASTERS</h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <a href="index.html" class="nav-item nav-link">Home</a>
+                <a href="about.html" class="nav-item nav-link">About</a>
+                <a href="service.html" class="nav-item nav-link">Services</a>
+                <a href="contact.html" class="nav-item nav-link">Contact Us</a>
+            </div>
+            <a href="#" class="btn btn-primary rounded-pill text-white py-2 px-4">Book Appointment</a>
+        </div>
+    </nav>
+    
+    <!-- Navbar End -->
+
+    <!-- Swiper Slider with Images and Inquiry Button -->
+    <div class="swiper-container">
+        <!-- Add the ID 'image-slider' here -->
+        <div class="swiper-wrapper" id="image-slider">
+            <!-- Swiper slides with images will be dynamically generated -->
+        </div>
+
+        <!-- Swiper Pagination -->
+        <div class="swiper-pagination"></div>
+        <!-- Swiper Navigation -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <!-- Bootstrap JS & Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Swiper.js CDN -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+
+        // Function to dynamically generate image entries for a category
+        function addImages(category, folderPath, numImages) {
+            let images = [];
+            for (let i = 1; i <= numImages; i++) {
+                images.push({
+                    id: i,
+                    img: `${folderPath}/img${i}.jpg`,
+                    title: `${category.charAt(0).toUpperCase() + category.slice(1)} ${i}`
+                });
+            }
+            return images;
+        }
+
+        const imagesByCategory = {};
+        imagesByCategory['handrails'] = addImages('handrails', 'assets/handrails', 49);
+        imagesByCategory['glass-works'] = addImages('glass-works', 'assets/glass-works', 55);
+        imagesByCategory['charupadi'] = addImages('charupadi', 'assets/charupadi', 3);
+        imagesByCategory['gates'] = addImages('gates', 'assets/gates', 6);
+
+        const swiperWrapper = document.getElementById('image-slider');
+        const whatsappNumber = '919847285548';
+
+        imagesByCategory[category].forEach((product) => {
+            const slide = document.createElement('div');
+            slide.classList.add('swiper-slide');
+            slide.innerHTML = `
+                <img src="${product.img}" alt="${product.title}" class="swiper-lazy">
+                <div class="swiper-lazy-preloader"></div>
+                 <a href="https://wa.me/${whatsappNumber}?text=Hello, I am interested in Handrails Works.Please share more details" target="_blank" class="inquiry-button">
+                    <i class="fab fa-whatsapp"></i> Inquire
+                </a>
+            `;
+            swiperWrapper.appendChild(slide);
+        });
+
+        const swiper = new Swiper('.swiper-container', {
+            direction: 'vertical', // Change direction to vertical
+            lazy: {
+                loadPrevNext: true,
+            },
+            preloadImages: false,
+            updateOnImagesReady: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            loop: true,
+        });
+    </script>
+
+</body>
+</html>
