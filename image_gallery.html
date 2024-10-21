@@ -48,11 +48,13 @@
 
         .swiper-slide img {
             width: auto; /* Adjust the width to auto to fit vertically */
-            max-width: 100%;
-            height: 100%;
+            height: auto; /* Change height to auto */
+    max-height: calc(100vh - 56px); 
             object-fit: cover;
             border-radius: 10px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: block; /* Ensure image is displayed as a block element */
+            margin: 0 auto; 
         }
 
         .inquiry-button {
@@ -176,9 +178,9 @@
 
         const imagesByCategory = {};
         imagesByCategory['handrails'] = addImages('handrails', 'assets/handrails', 49);
-        imagesByCategory['glass-works'] = addImages('glass-works', 'assets/glass-works', 55);
-        imagesByCategory['charupadi'] = addImages('charupadi', 'assets/charupadi', 3);
-        imagesByCategory['gates'] = addImages('gates', 'assets/gates', 6);
+        imagesByCategory['glass-works'] = addImages('glass-works', 'assets/glass_works', 55);
+        imagesByCategory['charupadi'] = addImages('charupadi', 'assets/charupadi', 8);
+        imagesByCategory['gates'] = addImages('gates', 'assets/gates', 20);
 
         const swiperWrapper = document.getElementById('image-slider');
         const whatsappNumber = '919847285548';
